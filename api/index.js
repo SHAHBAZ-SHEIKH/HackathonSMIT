@@ -12,9 +12,16 @@ const PORT = 5000;
 const app = express();
 
 dotenv.config();
-app.use(cors({
-    origin: '*'
-}));
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+ };
+ 
+ 
+ 
+ app.use(cors(corsOptions));
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

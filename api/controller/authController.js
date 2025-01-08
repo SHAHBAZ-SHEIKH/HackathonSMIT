@@ -140,6 +140,8 @@ export const signUp = async (req, res) => {
 // @route   POST api/auth/verifyEmail
 // @access  Private
 
+
+
 export const verifyEmail = async (req, res) => {
     console.log(req.user, "===>>> req.user")
     console.log(req.body, "===>>> req.body")
@@ -197,12 +199,13 @@ export const login = async (req, res) => {
         if (email && password) {
             // return res.send("login controller")
 
-            let user = await Users.findOne({ Email: email });
+            let user = await Users.findOne({ email: email });
             console.log(user);
             if (user) {
-                const isValid = compareSync(password, user.Password);
-                if (user.Email === email && isValid) {
-                    user.Password = undefined;
+                const isValid = compareSync(password, user.password);
+                console.log(isValid);
+                if (user.email === email && isValid) {
+                    user.password = undefined;
                     const token = GenerateToken({ data: user, expiresIn: '24h' });
                     res.cookie('token', token, { httpOnly: true });
                     res.status(OK).send(
@@ -231,7 +234,7 @@ export const login = async (req, res) => {
         }
     } catch (error) {
         return res.status(500)   //INTERNALERROR
-            .send(error.message)
+            .send(error)
         // .send(
         //     sendError({
         //         status: false,
@@ -335,7 +338,7 @@ export const resetPasswordEmail = async (req, res) => {
                 const salt = genSaltSync(10);
                 const hashedPassword = hashSync(newPassword, salt);
                 await Users.findByIdAndUpdate(userId, {
-                    $set: { Password: hashedPassword },
+                    $set: { password: hashedPassword },
                 });
                 return res.status(OK).send(
                     sendSuccess({
